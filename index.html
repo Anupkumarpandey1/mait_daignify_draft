@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Report Analyzer</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f7fa; /* Light background for contrast */
+    }
+
+    .navbar {
+      background-color: #007bff; /* Updated navbar color */
+    }
+
+    .navbar .nav-link {
+      color: rgb(255, 255, 255);
+      transition: color 0.3s; /* Smooth color transition */
+    }
+
+    .navbar .nav-link:hover {
+      color: #ffffff00; /* Change color on hover */
+      text-decoration: underline; /* Underline effect on hover */
+    }
+
+    .hero-section {
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://png.pngtree.com/thumb_back/fh260/background/20240712/pngtree-stethoscope-with-notepad-hospital-health-care-image_15872170.jpg') no-repeat center center/cover;
+      color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative; /* Added for the placeholder */
+    }
+
+    .hero-section::before {
+      content: '';
+      display: block;
+      background: url('https://png.pngtree.com/thumb_back/fh260/background/20240712/pngtree-stethoscope-with-notepad-hospital-health-care-image_15872170.jpg') no-repeat center center/cover; /* Placeholder image */
+      height: 100%;
+      width: 100%;
+      position: absolute; /* Positioned behind text */
+      z-index: 1; /* Behind text */
+      opacity: 0.3; /* Slightly transparent */
+    }
+
+    .hero-section h1 {
+      font-size: 4rem;
+      font-weight: bold;
+      z-index: 2; /* Above the placeholder */
+    }
+
+    .hero-section p {
+      font-size: 1.5rem;
+      z-index: 2; /* Above the placeholder */
+    }
+
+    .features-section {
+      padding: 50px 0;
+    }
+
+    .features-section .feature-item {
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s; /* Smooth scale transition */
+    }
+
+    .features-section .feature-item:hover {
+      transform: scale(1.05); /* Scale up on hover */
+    }
+
+    .how-it-works-section {
+      background: #f8f9fa;
+      padding: 50px 0;
+    }
+
+    .testimonials-section {
+      padding: 50px 0;
+    }
+
+    .contact-section {
+      padding: 50px 0;
+      background: #343a40;
+      color: white;
+    }
+
+    .footer {
+      padding: 20px;
+      text-align: center;
+      background: #212529;
+      color: white;
+    }
+    .nav-link{
+      color: rgb(255, 211, 211);
+    }
+      /* Updated Navbar Styles */
+  .navbar {
+    background-color: #0056b3; /* A more vibrant blue for the navbar */
+    padding: 15px 30px; /* Increased padding for a more spacious look */
+  }
+
+  .navbar .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff; /* White font for the brand */
+  }
+
+  .navbar .nav-link {
+    font-size: 1.1rem;
+    color: #f8f9fa; /* Softer white for a modern look */
+    margin-left: 20px; /* Increased space between navbar items */
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+  }
+
+  .navbar .nav-link:hover {
+    color: #ffeb3b; /* Bright yellow hover effect */
+    border-bottom: 2px solid #ffeb3b; /* Underline effect on hover */
+  }
+
+  .navbar-toggler {
+    border-color: #ffeb3b; /* Matching the toggler icon with the hover effect */
+  }
+  
+  .navbar-toggler-icon {
+    background-color: #ffeb3b; /* Make toggler icon yellow for contrast */
+  }
+  .a{
+
+    text-decoration: none;
+  }
+  </style>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">D I A G N I F Y</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="report_analysis_options.html">Report Analyzer</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLScfquSYY-JZCJFDBriTj3ZUqLm3Fv_WoQV6U12BgmVwXvXH_g/viewform?usp=sf_link">Medicine Reminder</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://arpita-kukreja.github.io/Diagnify/">Chatbot</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://anupkumarpandey1.github.io/symptoms-checker/">Symptoms Matcher</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="fitness.html">Fitness Test</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div>
+      <h1>Welcome to Health Report Analyzer</h1>
+      <p>Get accurate insights into your health reports</p>
+      <a href="report_analysis_options.html" class="btn btn-primary btn-lg" style="background-color: #f00;">REPORT ANALYSIS</a>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section container">
+    <div class="text-center mb-5">
+      <h2>Key Features</h2>
+      <p>Explore what makes our platform unique and powerful.</p>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <div class="feature-item p-4">
+          <i class="fas fa-notes-medical fa-3x mb-4"></i>
+          <h4>Detailed Analysis</h4>
+          <p>Analyze various health reports such as KFT, LFT, BT, and more with ease.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-item p-4">
+          <i class="fas fa-diagnoses fa-3x mb-4"></i>
+          <h4>Suggested Follow-ups</h4>
+          <p>Receive suggested follow-up tests for better diagnosis based on your report.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-item p-4">
+          <i class="fas fa-user-md fa-3x mb-4"></i>
+          <h4>Health Tips</h4>
+          <p>Personalized health tips based on your report results and lifestyle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works-section">
+    <div class="container text-center">
+      <h2>How It Works</h2>
+      <p>Simple and intuitive steps to analyze your health report.</p>
+      <div class="row mt-5">
+        <div class="col-md-3">
+          <i class="fas fa-upload fa-3x mb-3"></i>
+          <h5>1. Upload Report</h5>
+          <p>Upload your health report easily in a supported format.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="fas fa-search fa-3x mb-3"></i>
+          <h5>2. Analyze Data</h5>
+          <p>Our system will analyze the data to provide insights.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="fas fa-file-medical fa-3x mb-3"></i>
+          <h5>3. Get Results</h5>
+          <p>Get detailed results along with explanations in simple terms.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="fas fa-heartbeat fa-3x mb-3"></i>
+          <h5>4. Take Action</h5>
+          <p>Follow the suggested health tips and tests for better health.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section container">
+    <div class="text-center mb-5">
+      <h2>What Our Users Say</h2>
+      <p>See what others think about our health report analyzer.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="testimonial p-4">
+          <p><i class="fas fa-quote-left fa-2x"></i> This platform helped me understand my health report better than my doctor. The suggestions were on point! <i class="fas fa-quote-right fa-2x"></i></p>
+          <p class="text-right"><strong>- John Doe</strong></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial p-4">
+          <p><i class="fas fa-quote-left fa-2x"></i> The analysis was fast and easy to understand. Highly recommended for anyone confused about their health reports. <i class="fas fa-quote-right fa-2x"></i></p>
+          <p class="text-right"><strong>- Jane Smith</strong></p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial p-4">
+          <p><i class="fas fa-quote-left fa-2x"></i> A user-friendly platform that provides crucial information. I love the health tips they provide! <i class="fas fa-quote-right fa-2x"></i></p>
+          <p class="text-right"><strong>- Alex Johnson</strong></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section text-center">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p>Get in touch for any inquiries or support.</p>
+      <form class="mt-4">
+        <input type="text" class="form-control mb-2" placeholder="Your Name" required>
+        <input type="email" class="form-control mb-2" placeholder="Your Email" required>
+        <textarea class="form-control mb-2" rows="3" placeholder="Your Message" required></textarea>
+        <button type="submit" class="btn btn-light">Send Message</button>
+      </form>
+    </div>
+  </section>
+    <!-- Floating Chatbot Button -->
+    <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+  </div>
+
+    <!-- Floating Chatbot Button -->
+    <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+      <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="chat-window" id="chat-window">
+      <div class="chat-header">
+          <span>Diagnify Diet Assistant</span>
+          <button class="close-btn" onclick="toggleChat()">X</button>
+      </div>
+      <div class="chat-body" id="chat-body">
+          <div class="bot-message">
+              <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+          </div>
+      </div>
+      <div class="chat-input">
+          <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+          <button onclick="sendMessage()">Send</button>
+      </div>
+  </div>
+
+  <script src="script.js"></script>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Health Report Analyzer. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

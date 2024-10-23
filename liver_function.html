@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liver Disease Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+     body {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: none;
+        }
+        .card h2 {
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #5cb85c;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #4cae4c;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+        .alert i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+      <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2 class="text-center">Liver Function Report Analyzer</h2>
+            <form id="liverForm">
+                <div class="form-group">
+                    <label for="alt">ALT (Alanine Aminotransferase):</label>
+                    <input type="number" id="alt" class="form-control" placeholder="Enter ALT value" required>
+                </div>
+                <div class="form-group">
+                    <label for="ast">AST (Aspartate Aminotransferase):</label>
+                    <input type="number" id="ast" class="form-control" placeholder="Enter AST value" required>
+                </div>
+                <div class="form-group">
+                    <label for="bilirubin">Bilirubin:</label>
+                    <input type="number" id="bilirubin" class="form-control" placeholder="Enter Bilirubin value" required>
+                </div>
+                <div class="form-group">
+                    <label for="albumin">Albumin:</label>
+                    <input type="number" id="albumin" class="form-control" placeholder="Enter Albumin value" required>
+                </div>
+                <div class="form-group">
+                    <label for="alp">ALP (Alkaline Phosphatase):</label>
+                    <input type="number" id="alp" class="form-control" placeholder="Enter ALP value" required>
+                </div>
+                <div class="form-group">
+                    <label for="ggt">GGT (Gamma-Glutamyl Transferase):</label>
+                    <input type="number" id="ggt" class="form-control" placeholder="Enter GGT value" required>
+                </div>
+                <div class="form-group">
+                    <label for="pt">Prothrombin Time (PT):</label>
+                    <input type="number" id="pt" class="form-control" placeholder="Enter PT value" required>
+                </div>
+                <div class="form-group">
+                    <label for="creatinine">Serum Creatinine:</label>
+                    <input type="number" id="creatinine" class="form-control" placeholder="Enter Serum Creatinine value" required>
+                </div>
+                <div class="form-group">
+                    <label for="ldh">Lactate Dehydrogenase (LDH):</label>
+                    <input type="number" id="ldh" class="form-control" placeholder="Enter LDH value" required>
+                </div>
+                <div class="form-group">
+                    <label for="protein">Total Protein:</label>
+                    <input type="number" id="protein" class="form-control" placeholder="Enter Total Protein value" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin: 50px auto;">Analyze</button>
+            </form>
+            <div id="result" class="results"></div>
+            <canvas id="diseaseChart" style="display:none;"></canvas>
+        </div>
+    </div>
+
+     <!-- Floating Chatbot Button -->
+     <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span>Diagnify Diet Assistant</span>
+            <button class="close-btn" onclick="toggleChat()">X</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="bot-message">
+                <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#liverForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Get all form values
+                let alt = parseFloat($('#alt').val());
+                let ast = parseFloat($('#ast').val());
+                let bilirubin = parseFloat($('#bilirubin').val());
+                let albumin = parseFloat($('#albumin').val());
+                let alp = parseFloat($('#alp').val());
+                let ggt = parseFloat($('#ggt').val());
+                let pt = parseFloat($('#pt').val());
+                let creatinine = parseFloat($('#creatinine').val());
+                let ldh = parseFloat($('#ldh').val());
+                let protein = parseFloat($('#protein').val());
+
+                let diseases = [];
+                let followUps = [];
+                let elevatedValues = [];
+
+                // Normal ranges for parameters (example ranges)
+                let normalRanges = {
+                    alt: { min: 10, max: 40, description: "ALT (Alanine Aminotransferase) is an enzyme that indicates liver health." },
+                    ast: { min: 10, max: 40, description: "AST (Aspartate Aminotransferase) is related to liver and muscle health." },
+                    bilirubin: { min: 0.1, max: 1.2, description: "Bilirubin indicates liver function." },
+                    albumin: { min: 3.5, max: 5.0, description: "Albumin helps maintain fluid balance." },
+                    alp: { min: 44, max: 147, description: "ALP is related to liver and bones." },
+                    ggt: { min: 0, max: 51, description: "GGT indicates bile duct issues." },
+                    pt: { min: 9, max: 12.5, description: "PT measures blood clotting." },
+                    creatinine: { min: 0.6, max: 1.2, description: "Creatinine indicates kidney function." },
+                    ldh: { min: 140, max: 280, description: "LDH indicates tissue damage." },
+                    protein: { min: 6.0, max: 8.3, description: "Total protein indicates nutritional and liver health." }
+                };
+
+                // Function to check elevated values
+                function checkElevated(parameter, value) {
+                    if (value < normalRanges[parameter].min || value > normalRanges[parameter].max) {
+                        elevatedValues.push({
+                            name: parameter.toUpperCase(),
+                            value: value,
+                            normalRange: `${normalRanges[parameter].min} - ${normalRanges[parameter].max}`,
+                            description: normalRanges[parameter].description
+                        });
+                    }
+                }
+
+                checkElevated('alt', alt);
+                checkElevated('ast', ast);
+                checkElevated('bilirubin', bilirubin);
+                checkElevated('albumin', albumin);
+                checkElevated('alp', alp);
+                checkElevated('ggt', ggt);
+                checkElevated('pt', pt);
+                checkElevated('creatinine', creatinine);
+                checkElevated('ldh', ldh);
+                checkElevated('protein', protein);
+
+                // Disease matching logic
+                if (alt > 100 && ast > 100 && bilirubin > 2) {
+                    diseases.push({ name: "Hepatitis", percentage: 90 });
+                    followUps.push("Liver biopsy, Hepatitis panel");
+                }
+                if (ast / alt > 1 && bilirubin > 1.2 && albumin < 3.5) {
+                    diseases.push({ name: "Cirrhosis", percentage: 85 });
+                    followUps.push("Ultrasound, CT scan");
+                }
+                if (alt > 50 && alt < 100 && ast < 50 && ggt > 50) {
+                    diseases.push({ name: "Fatty Liver Disease", percentage: 70 });
+                    followUps.push("Lifestyle changes, Follow-up ultrasound");
+                }
+                if (alp > 150 && ggt > 50 && bilirubin > 1.5) {
+                    diseases.push({ name: "Liver Cancer", percentage: 80 });
+                    followUps.push("MRI, Liver function tests");
+                }
+                if (alp > 120 && bilirubin > 2) {
+                    diseases.push({ name: "Bile Duct Obstruction", percentage: 75 });
+                    followUps.push("ERCP, MRI");
+                }
+                if (alt > 70 && ast > 70 && bilirubin > 2 && creatinine < 0.5) {
+                    diseases.push({ name: "Wilson’s Disease", percentage: 70 });
+                    followUps.push("Ceruloplasmin test, 24-hour urine copper test");
+                }
+                if (ast > 100 && alt > 100 && creatinine > 1.2) {
+                    diseases.push({ name: "Hemochromatosis", percentage: 80 });
+                    followUps.push("Iron studies, Liver biopsy");
+                }
+                if (alt > 200 && ast > 200 && ggt > 150 && bilirubin > 3) {
+                    diseases.push({ name: "Autoimmune Hepatitis", percentage: 90 });
+                    followUps.push("Autoantibody tests, Liver biopsy");
+                }
+                if (alt > 100 && bilirubin > 2 && albumin < 3.5) {
+                    diseases.push({ name: "Alcoholic Liver Disease", percentage: 85 });
+                    followUps.push("Nutritional assessment, Counseling");
+                }
+                if (ast / alt > 2 && pt > 14 && bilirubin > 2) {
+                    diseases.push({ name: "Acute Liver Failure", percentage: 95 });
+                    followUps.push("Hospitalization, Liver transplant evaluation");
+                }
+
+                // Display results
+                let resultMessage = '';
+                if (diseases.length > 0) {
+                    resultMessage += '<div class="alert alert-success"><i class="fas fa-check-circle"></i> Matching Diseases:</div>';
+                    let chartLabels = [];
+                    let chartData = [];
+                    for (let i = 0; i < diseases.length; i++) {
+                        resultMessage += `<div><strong>${diseases[i].name}</strong>: ${diseases[i].percentage}%</div>`;
+                        chartLabels.push(diseases[i].name);
+                        chartData.push(diseases[i].percentage);
+                    }
+                    $('#result').html(resultMessage);
+                    createChart(chartLabels, chartData);
+                    
+                    // Display follow-up tests
+                    let followUpMessage = '<div class="alert alert-info"><i class="fas fa-info-circle"></i> Recommended Follow-Up Tests:</div>';
+                    for (let i = 0; i < diseases.length; i++) {
+                        followUpMessage += `<div><strong>${diseases[i].name}</strong>: ${followUps[i]}</div>`;
+                    }
+                    $('#result').append(followUpMessage);
+                } else {
+                    resultMessage += '<div class="alert alert-warning"><i class="fas fa-exclamation-circle"></i> No matching diseases found.</div>';
+                    $('#result').html(resultMessage);
+                }
+
+                // Display elevated values
+                if (elevatedValues.length > 0) {
+                    let elevatedMessage = '<div class="alert alert-warning"><i class="fas fa-exclamation-circle"></i> Elevated Parameters:</div>';
+                    for (let i = 0; i < elevatedValues.length; i++) {
+                        elevatedMessage += `<div><strong>${elevatedValues[i].name}</strong>: ${elevatedValues[i].value} (Normal range: ${elevatedValues[i].normalRange})</div>
+                                            <div>${elevatedValues[i].description}</div>`;
+                    }
+                    $('#result').append(elevatedMessage);
+                }
+            });
+        });
+
+        function createChart(labels, data) {
+            const ctx = document.getElementById('diseaseChart').getContext('2d');
+            document.getElementById('diseaseChart').style.display = 'block';
+
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Matching Percentage',
+                        data: data,
+                        backgroundColor: 'rgba(92, 184, 92, 0.6)',
+                        borderColor: 'rgba(92, 184, 92, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

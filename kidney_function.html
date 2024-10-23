@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidney Function Report Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: none;
+        }
+        .card h2 {
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #5cb85c;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #4cae4c;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+        .alert i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+      <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2 class="text-center">Kidney Function Report Analyzer</h2>
+            <form id="kidneyForm">
+                <div class="form-group">
+                    <label for="creatinine">Serum Creatinine:</label>
+                    <input type="number" id="creatinine" class="form-control" placeholder="Enter Serum Creatinine value (mg/dL)" required>
+                </div>
+                <div class="form-group">
+                    <label for="bloodUrea">Blood Urea Nitrogen (BUN):</label>
+                    <input type="number" id="bloodUrea" class="form-control" placeholder="Enter BUN value (mg/dL)" required>
+                </div>
+                <div class="form-group">
+                    <label for="eGFR">Estimated Glomerular Filtration Rate (eGFR):</label>
+                    <input type="number" id="eGFR" class="form-control" placeholder="Enter eGFR value (mL/min)" required>
+                </div>
+                <div class="form-group">
+                    <label for="urineProtein">Urine Protein:</label>
+                    <input type="number" id="urineProtein" class="form-control" placeholder="Enter Urine Protein value (mg/dL)" required>
+                </div>
+                <div class="form-group">
+                    <label for="urineCreatinine">Urine Creatinine:</label>
+                    <input type="number" id="urineCreatinine" class="form-control" placeholder="Enter Urine Creatinine value (mg/dL)" required>
+                </div>
+                <div class="form-group">
+                    <label for="urinepH">Urine pH:</label>
+                    <input type="number" id="urinepH" class="form-control" placeholder="Enter Urine pH value" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin: 50px auto;">Analyze</button>
+            </form>
+            <div id="result" class="results"></div>
+            <canvas id="diseaseChart" style="display:none;"></canvas>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Button -->
+    <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span>Diagnify Diet Assistant</span>
+            <button class="close-btn" onclick="toggleChat()">X</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="bot-message">
+                <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#kidneyForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Get all form values
+                let creatinine = parseFloat($('#creatinine').val());
+                let bloodUrea = parseFloat($('#bloodUrea').val());
+                let eGFR = parseFloat($('#eGFR').val());
+                let urineProtein = parseFloat($('#urineProtein').val());
+                let urineCreatinine = parseFloat($('#urineCreatinine').val());
+                let urinepH = parseFloat($('#urinepH').val());
+
+                let diseases = [];
+                let followUps = [];
+                let elevatedValues = [];
+
+                // Normal ranges for parameters (example ranges)
+                let normalRanges = {
+                    creatinine: { min: 0.6, max: 1.2, description: "Serum Creatinine indicates kidney function." },
+                    bloodUrea: { min: 7, max: 20, description: "BUN indicates the amount of nitrogen in the blood." },
+                    eGFR: { min: 90, max: 120, description: "eGFR assesses kidney filtration rate." },
+                    urineProtein: { min: 0, max: 20, description: "Protein in urine indicates kidney damage." },
+                    urineCreatinine: { min: 20, max: 370, description: "Urine Creatinine indicates kidney function." },
+                    urinepH: { min: 4.5, max: 8, description: "Urine pH indicates acid-base balance." }
+                };
+
+                // Function to check elevated values
+                function checkElevated(parameter, value) {
+                    if (value < normalRanges[parameter].min || value > normalRanges[parameter].max) {
+                        elevatedValues.push({
+                            name: parameter.toUpperCase(),
+                            value: value,
+                            normalRange: `${normalRanges[parameter].min} - ${normalRanges[parameter].max}`,
+                            description: normalRanges[parameter].description
+                        });
+                    }
+                }
+
+                checkElevated('creatinine', creatinine);
+                checkElevated('bloodUrea', bloodUrea);
+                checkElevated('eGFR', eGFR);
+                checkElevated('urineProtein', urineProtein);
+                checkElevated('urineCreatinine', urineCreatinine);
+                checkElevated('urinepH', urinepH);
+
+                // Disease matching logic
+                if (creatinine > 1.5 && eGFR < 60) {
+                    diseases.push({ name: "Chronic Kidney Disease", percentage: 85 });
+                    followUps.push("Nephrologist referral, Further imaging studies");
+                }
+                if (bloodUrea > 20 && creatinine > 2) {
+                    diseases.push({ name: "Acute Kidney Injury", percentage: 90 });
+                    followUps.push("Hospitalization, Dialysis assessment");
+                }
+                if (urineProtein > 30) {
+                    diseases.push({ name: "Diabetic Nephropathy", percentage: 80 });
+                    followUps.push("Renal ultrasound, Diabetes management");
+                }
+                if (urinepH < 5.5) {
+                    diseases.push({ name: "Metabolic Acidosis", percentage: 75 });
+                    followUps.push("Electrolyte panel, Sodium bicarbonate therapy");
+                }
+                if (creatinine > 3 && eGFR < 30) {
+                    diseases.push({ name: "End-Stage Renal Disease", percentage: 90 });
+                    followUps.push("Dialysis, Kidney transplant evaluation");
+                }
+
+                // Display results
+                let resultMessage = '';
+                if (diseases.length > 0) {
+                    resultMessage += '<div class="alert alert-success"><i class="fas fa-check-circle"></i> Matching Diseases:</div>';
+                    let chartLabels = [];
+                    let chartData = [];
+                    for (let i = 0; i < diseases.length; i++) {
+                        resultMessage += `<div><strong>${diseases[i].name}</strong>: ${diseases[i].percentage}%</div>`;
+                        chartLabels.push(diseases[i].name);
+                        chartData.push(diseases[i].percentage);
+                    }
+                    $('#result').html(resultMessage);
+                    createChart(chartLabels, chartData);
+                    
+                    // Display follow-up tests
+                    resultMessage += '<div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> Recommended Follow-Up Tests:</div>';
+                    followUps.forEach(followUp => {
+                        resultMessage += `<div>${followUp}</div>`;
+                    });
+                } else {
+                    resultMessage += '<div class="alert alert-info"><i class="fas fa-info-circle"></i> No diseases matched.</div>';
+                }
+
+                // Display elevated values
+                if (elevatedValues.length > 0) {
+                    resultMessage += '<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Elevated Values:</div>';
+                    elevatedValues.forEach(item => {
+                        resultMessage += `<div>${item.name} (${item.value}) - Normal Range: ${item.normalRange} (${item.description})</div>`;
+                    });
+                }
+
+                $('#result').html(resultMessage);
+            });
+
+            // Create Chart.js chart
+            function createChart(labels, data) {
+                const ctx = document.getElementById('diseaseChart').getContext('2d');
+                $('#diseaseChart').show();
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Disease Probability (%)',
+                            data: data,
+                            backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                            borderColor: 'rgba(76, 175, 80, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Probability of Kidney-Related Diseases'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    <footer>
+        &copy; 2024 Kidney Function Report Analyzer. All Rights Reserved.
+    </footer>
+</body>
+</html>

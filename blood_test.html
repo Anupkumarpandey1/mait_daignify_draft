@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Blood Count Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+     body {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: none;
+        }
+        .card h2 {
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #5cb85c;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #4cae4c;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+        .alert i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+      <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2 class="text-center">Complete Blood Count Analyzer</h2>
+            <form id="cbcForm">
+                <div class="form-group">
+                    <label for="wbc">White Blood Cells (WBC):</label>
+                    <input type="number" id="wbc" class="form-control" placeholder="Enter WBC count" required>
+                </div>
+                <div class="form-group">
+                    <label for="rbc">Red Blood Cells (RBC):</label>
+                    <input type="number" id="rbc" class="form-control" placeholder="Enter RBC count" required>
+                </div>
+                <div class="form-group">
+                    <label for="hemoglobin">Hemoglobin:</label>
+                    <input type="number" id="hemoglobin" class="form-control" placeholder="Enter Hemoglobin level" required>
+                </div>
+                <div class="form-group">
+                    <label for="hematocrit">Hematocrit:</label>
+                    <input type="number" id="hematocrit" class="form-control" placeholder="Enter Hematocrit percentage" required>
+                </div>
+                <div class="form-group">
+                    <label for="platelets">Platelet Count:</label>
+                    <input type="number" id="platelets" class="form-control" placeholder="Enter Platelet count" required>
+                </div>
+                <div class="form-group">
+                    <label for="mcv">Mean Corpuscular Volume (MCV):</label>
+                    <input type="number" id="mcv" class="form-control" placeholder="Enter MCV value" required>
+                </div>
+                <div class="form-group">
+                    <label for="mch">Mean Corpuscular Hemoglobin (MCH):</label>
+                    <input type="number" id="mch" class="form-control" placeholder="Enter MCH value" required>
+                </div>
+                <div class="form-group">
+                    <label for="mchc">Mean Corpuscular Hemoglobin Concentration (MCHC):</label>
+                    <input type="number" id="mchc" class="form-control" placeholder="Enter MCHC value" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin: 50px auto;">Analyze</button>
+            </form>
+            <div id="result" class="results"></div>
+            <canvas id="diseaseChart" style="display:none;"></canvas>
+        </div>
+    </div>
+     <!-- Floating Chatbot Button -->
+     <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span>Diagnify Diet Assistant</span>
+            <button class="close-btn" onclick="toggleChat()">X</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="bot-message">
+                <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#cbcForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Get all form values
+                let wbc = parseFloat($('#wbc').val());
+                let rbc = parseFloat($('#rbc').val());
+                let hemoglobin = parseFloat($('#hemoglobin').val());
+                let hematocrit = parseFloat($('#hematocrit').val());
+                let platelets = parseFloat($('#platelets').val());
+                let mcv = parseFloat($('#mcv').val());
+                let mch = parseFloat($('#mch').val());
+                let mchc = parseFloat($('#mchc').val());
+
+                let diseases = [];
+                let followUps = [];
+                let abnormalValues = [];
+
+                // Normal ranges for parameters
+                let normalRanges = {
+                    wbc: { min: 4.0, max: 11.0, description: "WBC count helps detect infections, inflammation, and immune disorders." },
+                    rbc: { min: 4.5, max: 5.9, description: "RBC count assesses oxygen-carrying capacity." },
+                    hemoglobin: { min: 13.5, max: 17.5, description: "Hemoglobin carries oxygen to the body's tissues." },
+                    hematocrit: { min: 38, max: 50, description: "Hematocrit measures the proportion of red blood cells." },
+                    platelets: { min: 150, max: 450, description: "Platelets help with blood clotting." },
+                    mcv: { min: 80, max: 100, description: "MCV measures the size of red blood cells." },
+                    mch: { min: 27, max: 33, description: "MCH measures the amount of hemoglobin per red blood cell." },
+                    mchc: { min: 32, max: 36, description: "MCHC measures the concentration of hemoglobin in red blood cells." }
+                };
+
+                // Function to check abnormal values
+                function checkAbnormal(parameter, value) {
+                    if (value < normalRanges[parameter].min || value > normalRanges[parameter].max) {
+                        abnormalValues.push({
+                            name: parameter.toUpperCase(),
+                            value: value,
+                            normalRange: `${normalRanges[parameter].min} - ${normalRanges[parameter].max}`,
+                            description: normalRanges[parameter].description
+                        });
+                    }
+                }
+
+                checkAbnormal('wbc', wbc);
+                checkAbnormal('rbc', rbc);
+                checkAbnormal('hemoglobin', hemoglobin);
+                checkAbnormal('hematocrit', hematocrit);
+                checkAbnormal('platelets', platelets);
+                checkAbnormal('mcv', mcv);
+                checkAbnormal('mch', mch);
+                checkAbnormal('mchc', mchc);
+
+                // Disease matching logic
+                if (wbc > 11.0) {
+                    diseases.push({ name: "Infection", percentage: 80 });
+                    followUps.push("Blood culture, Antibiotic therapy");
+                }
+                if (wbc < 4.0) {
+                    diseases.push({ name: "Leukopenia", percentage: 70 });
+                    followUps.push("Bone marrow biopsy, Immune system evaluation");
+                }
+                if (hemoglobin < 12.0 && mch < 27) {
+                    diseases.push({ name: "Iron Deficiency Anemia", percentage: 85 });
+                    followUps.push("Iron supplements, Diet changes");
+                }
+                if (mcv > 100) {
+                    diseases.push({ name: "Vitamin B12 Deficiency", percentage: 75 });
+                    followUps.push("Vitamin B12 levels, Intramuscular B12 injections");
+                }
+                if (platelets < 150) {
+                    diseases.push({ name: "Thrombocytopenia", percentage: 65 });
+                    followUps.push("Bone marrow biopsy, Platelet transfusion");
+                }
+
+                // Show result
+                let resultHtml = `<h4>Analysis Result</h4>`;
+                if (abnormalValues.length > 0) {
+                    resultHtml += `<p>Abnormal Values Detected:</p><ul>`;
+                    abnormalValues.forEach(item => {
+                        resultHtml += `<li>${item.name}: ${item.value} (Normal Range: ${item.normalRange}) - ${item.description}</li>`;
+                    });
+                    resultHtml += `</ul>`;
+                }
+
+                if (diseases.length > 0) {
+                    resultHtml += `<p>Possible Conditions:</p><ul>`;
+                    diseases.forEach(disease => {
+                        resultHtml += `<li>${disease.name}: ${disease.percentage}% likelihood</li>`;
+                    });
+                    resultHtml += `</ul>`;
+                    resultHtml += `<p>Recommended Follow-up Tests:</p><ul>`;
+                    followUps.forEach(test => {
+                        resultHtml += `<li>${test}</li>`;
+                    });
+                    resultHtml += `</ul>`;
+                } else {
+                    resultHtml += `<p>No significant abnormalities detected.</p>`;
+                }
+
+                $('#result').html(resultHtml);
+                
+                // Generate Chart for diseases
+                let ctx = document.getElementById('diseaseChart').getContext('2d');
+                let diseaseNames = diseases.map(d => d.name);
+                let diseasePercentages = diseases.map(d => d.percentage);
+                document.getElementById('diseaseChart').style.display = "block";
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: diseaseNames,
+                        datasets: [{
+                            label: 'Disease Probability (%)',
+                            data: diseasePercentages,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+<footer>© 2024 Complete Blood Count Analyzer</footer>
+</html>

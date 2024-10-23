@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Assessment</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .hero {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+        }
+        .form-section {
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .results-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .health-score {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        canvas {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .tip {
+            font-size: 1.1rem;
+            margin: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-left: 4px solid #2575fc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .tip strong {
+            color: #6a11cb;
+        }
+        footer {
+            background-color: #6a11cb;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+      <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="hero">
+        <h1>Fitness Assessment</h1>
+        <p>Answer a few questions to get your personalized fitness score!</p>
+    </header>
+
+    <section class="form-section">
+        <h2>Enter Your Fitness Details</h2>
+        <form id="fitness-form">
+            <!-- Input Fields -->
+            <div class="form-group">
+                <label for="sleep-hours">Sleeping Hours (per day):</label>
+                <input type="number" id="sleep-hours" name="sleep-hours" required>
+            </div>
+            <div class="form-group">
+                <label for="calories-intake">Calories Intake (per day):</label>
+                <input type="number" id="calories-intake" name="calories-intake" required>
+            </div>
+            <div class="form-group">
+                <label for="exercise-hours">Exercise (hours per week):</label>
+                <input type="number" id="exercise-hours" name="exercise-hours" required>
+            </div>
+            <div class="form-group">
+                <label for="steps">Daily Steps:</label>
+                <input type="number" id="steps" name="steps" required>
+            </div>
+            <div class="form-group">
+                <label for="screen-time">Screen Time (hours per day):</label>
+                <input type="number" id="screen-time" name="screen-time" required>
+            </div>
+            <div class="form-group">
+                <label for="height">Height (in cm):</label>
+                <input type="number" id="height" name="height" required>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (in kg):</label>
+                <input type="number" id="weight" name="weight" required>
+            </div>
+            <button type="submit">Get Fitness Score</button>
+        </form>
+    </section>
+
+    <section class="results-section">
+        <h2>Your Fitness Results</h2>
+        <div class="health-score" id="healthScoreText"></div>
+        <canvas id="fitnessChart"></canvas>
+        <div id="tips-section"></div>
+    </section>
+
+     <!-- Floating Chatbot Button -->
+     <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span>Diagnify Diet Assistant</span>
+            <button class="close-btn" onclick="toggleChat()">X</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="bot-message">
+                <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+    <script>
+    
+    
+    
+    document.getElementById('fitness-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Form Data
+    const sleepHours = parseInt(document.getElementById('sleep-hours').value);
+    const caloriesIntake = parseInt(document.getElementById('calories-intake').value);
+    const exerciseHours = parseInt(document.getElementById('exercise-hours').value);
+    const steps = parseInt(document.getElementById('steps').value);
+    const screenTime = parseInt(document.getElementById('screen-time').value);
+    const height = document.getElementById('height').value / 100;
+    const weight = parseInt(document.getElementById('weight').value);
+    const bmi = (weight / (height * height)).toFixed(2);
+
+    // Calculate Fitness Score
+    let fitnessScore = 0;
+
+    // Sleep Hours
+    if (sleepHours >= 7 && sleepHours <= 9) {
+        fitnessScore += 20; // Healthy range
+    } else if (sleepHours >= 5 && sleepHours < 7 || sleepHours > 9 && sleepHours <= 10) {
+        fitnessScore += 10; // Slightly unhealthy
+    } else {
+        fitnessScore += 5; // Poor sleep
+    }
+
+    // Calories Intake
+    if (caloriesIntake <= 2500) {
+        fitnessScore += 20; // Healthy
+    } else if (caloriesIntake > 2500 && caloriesIntake <= 3000) {
+        fitnessScore += 10; // Slightly high
+    } else {
+        fitnessScore += 5; // Too high
+    }
+
+    // Exercise Hours
+    if (exerciseHours >= 3) {
+        fitnessScore += 20; // Good exercise
+    } else if (exerciseHours >= 1 && exerciseHours < 3) {
+        fitnessScore += 10; // Some exercise
+    } else {
+        fitnessScore += 5; // Little to no exercise
+    }
+
+    // Daily Steps
+    if (steps >= 10000) {
+        fitnessScore += 20; // Good steps
+    } else if (steps >= 5000 && steps < 10000) {
+        fitnessScore += 10; // Some steps
+    } else {
+        fitnessScore += 5; // Very few steps
+    }
+
+    // Screen Time
+    if (screenTime <= 2) {
+        fitnessScore += 20; // Healthy screen time
+    } else if (screenTime > 2 && screenTime <= 4) {
+        fitnessScore += 10; // Moderate screen time
+    } else {
+        fitnessScore += 5; // High screen time
+    }
+
+    const scorePercentage = (fitnessScore / 100) * 100; // Assuming max score is 100
+
+    // Display Written Health Score
+    document.getElementById('healthScoreText').textContent = `Your Health Score: ${scorePercentage}%`;
+
+    // Doughnut Chart Data
+    const data = {
+        labels: ['Health Score'],
+        datasets: [{
+            data: [scorePercentage, 100 - scorePercentage],
+            backgroundColor: ['#36a2eb', '#f4f6f9']
+        }]
+    };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw}%`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    const ctx = document.getElementById('fitnessChart').getContext('2d');
+    new Chart(ctx, config);
+
+    // Display Tips and Elevated Parameters
+    const tipsSection = document.getElementById('tips-section');
+    tipsSection.innerHTML = `
+        <div class="tip"><strong>BMI:</strong> Your BMI is ${bmi}. ${getBMIFeedback(bmi)}</div>
+        <div class="tip"><strong>Calories Intake:</strong> ${caloriesIntake > 2500 ? "Your calorie intake is high, consider reducing it to below 2500." : "Your calorie intake is appropriate!"}</div>
+        <div class="tip"><strong>Screen Time:</strong> ${screenTime > 6 ? "Try reducing screen time to below 6 hours for a healthier lifestyle." : "Good job managing your screen time!"}</div>
+        <div class="tip"><strong>Steps:</strong> ${steps < 10000 ? "Increase your daily steps to reach at least 10,000." : "You're achieving a healthy number of steps!"}</div>
+    `;
+});
+
+
+
+        document.getElementById('fitness-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Form Data
+            const sleepHours = parseInt(document.getElementById('sleep-hours').value);
+            const caloriesIntake = parseInt(document.getElementById('calories-intake').value);
+            const exerciseHours = parseInt(document.getElementById('exercise-hours').value);
+            const steps = parseInt(document.getElementById('steps').value);
+            const screenTime = parseInt(document.getElementById('screen-time').value);
+            const height = document.getElementById('height').value / 100;
+            const weight = parseInt(document.getElementById('weight').value);
+            const bmi = (weight / (height * height)).toFixed(2);
+
+           const fitnessScore = Math.min((sleepHours / 8) * 25, 25) +  // Cap at 25 points
+                     ((caloriesIntake <= 2500 ? 1 : 0) * 25) +  // Cap at 25 points
+                     Math.min((exerciseHours / 7) * 20, 20) +  // Cap at 20 points
+                     Math.min((steps / 10000) * 20, 20) +  // Cap at 20 points
+                     ((screenTime <= 6 ? 1 : 0) * 10);  // Cap at 10 points
+
+            const scorePercentage = fitnessScore.toFixed(0);
+
+            // Display Written Health Score
+            document.getElementById('healthScoreText').textContent = `Your Health Score: ${scorePercentage}%`;
+
+            // Doughnut Chart Data
+            const data = {
+                labels: ['Health Score'],
+                datasets: [{
+                    data: [scorePercentage, 100 - scorePercentage],
+                    backgroundColor: ['#36a2eb', '#f4f6f9']
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const ctx = document.getElementById('fitnessChart').getContext('2d');
+            new Chart(ctx, config);
+
+            // Display Tips and Elevated Parameters
+            const tipsSection = document.getElementById('tips-section');
+            tipsSection.innerHTML = `
+                <div class="tip"><strong>BMI:</strong> Your BMI is ${bmi}. ${getBMIFeedback(bmi)}</div>
+                <div class="tip"><strong>Calories Intake:</strong> ${caloriesIntake > 2500 ? "Your calorie intake is high, consider reducing it to below 2500." : "Your calorie intake is appropriate!"}</div>
+                <div class="tip"><strong>Screen Time:</strong> ${screenTime > 6 ? "Try reducing screen time to below 6 hours for a healthier lifestyle." : "Good job managing your screen time!"}</div>
+                <div class="tip"><strong>Steps:</strong> ${steps < 10000 ? "Increase your daily steps to reach at least 10,000." : "You're achieving a healthy number of steps!"}</div>
+            `;
+        });
+
+        // BMI Feedback Function
+        function getBMIFeedback(bmi) {
+            if (bmi < 18.5) return "You are underweight. Consider a balanced diet to gain weight.";
+            else if (bmi >= 18.5 && bmi <= 24.9) return "You have a normal BMI. Great job maintaining it!";
+            else return "You are overweight. Increase physical activity and watch your diet.";
+        }
+    </script>
+
+    <footer>
+        <p>Stay fit, stay healthy!</p>
+    </footer>
+</body>
+</html>

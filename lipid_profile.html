@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lipid Profile Analyzer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+     body {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: #fff;
+            border: none;
+        }
+        .card h2 {
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #5cb85c;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #4cae4c;
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 18px;
+        }
+        .alert i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2 class="text-center">Lipid Profile Test Analyzer</h2>
+            <form id="lipidForm">
+                <div class="form-group">
+                    <label for="totalCholesterol">Total Cholesterol:</label>
+                    <input type="number" id="totalCholesterol" class="form-control" placeholder="Enter Total Cholesterol value" required>
+                </div>
+                <div class="form-group">
+                    <label for="hdl">HDL (High-Density Lipoprotein):</label>
+                    <input type="number" id="hdl" class="form-control" placeholder="Enter HDL value" required>
+                </div>
+                <div class="form-group">
+                    <label for="ldl">LDL (Low-Density Lipoprotein):</label>
+                    <input type="number" id="ldl" class="form-control" placeholder="Enter LDL value" required>
+                </div>
+                <div class="form-group">
+                    <label for="triglycerides">Triglycerides:</label>
+                    <input type="number" id="triglycerides" class="form-control" placeholder="Enter Triglycerides value" required>
+                </div>
+                <div class="form-group">
+                    <label for="vldl">VLDL (Very Low-Density Lipoprotein):</label>
+                    <input type="number" id="vldl" class="form-control" placeholder="Enter VLDL value" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin: 50px auto;">Analyze</button>
+            </form>
+            <div id="result" class="results"></div>
+            <canvas id="diseaseChart" style="display:none;"></canvas>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#lipidForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Get all form values
+                let totalCholesterol = parseFloat($('#totalCholesterol').val());
+                let hdl = parseFloat($('#hdl').val());
+                let ldl = parseFloat($('#ldl').val());
+                let triglycerides = parseFloat($('#triglycerides').val());
+                let vldl = parseFloat($('#vldl').val());
+
+                let diseases = [];
+                let followUps = [];
+                let elevatedValues = [];
+
+                // Normal ranges for lipid profile (example ranges)
+                let normalRanges = {
+                    totalCholesterol: { min: 125, max: 200, description: "Total cholesterol is a measure of the total amount of cholesterol in your blood." },
+                    hdl: { min: 40, max: 60, description: "HDL is known as the 'good' cholesterol." },
+                    ldl: { min: 50, max: 130, description: "LDL is known as the 'bad' cholesterol." },
+                    triglycerides: { min: 10, max: 150, description: "Triglycerides are a type of fat found in your blood." },
+                    vldl: { min: 2, max: 30, description: "VLDL is a type of lipoprotein made by the liver." }
+                };
+
+                // Function to check elevated values
+                function checkElevated(parameter, value) {
+                    if (value < normalRanges[parameter].min || value > normalRanges[parameter].max) {
+                        elevatedValues.push({
+                            name: parameter.toUpperCase(),
+                            value: value,
+                            normalRange: `${normalRanges[parameter].min} - ${normalRanges[parameter].max}`,
+                            description: normalRanges[parameter].description
+                        });
+                    }
+                }
+
+                checkElevated('totalCholesterol', totalCholesterol);
+                checkElevated('hdl', hdl);
+                checkElevated('ldl', ldl);
+                checkElevated('triglycerides', triglycerides);
+                checkElevated('vldl', vldl);
+
+                // Disease matching logic
+                if (ldl > 160 && totalCholesterol > 240) {
+                    diseases.push({ name: "Hyperlipidemia", percentage: 90 });
+                    followUps.push("Lipid-lowering medication, Diet changes");
+                }
+                if (hdl < 40 && triglycerides > 150) {
+                    diseases.push({ name: "Metabolic Syndrome", percentage: 85 });
+                    followUps.push("Lifestyle changes, Exercise");
+                }
+                if (vldl > 30 && totalCholesterol > 240) {
+                    diseases.push({ name: "Familial Hypercholesterolemia", percentage: 80 });
+                    followUps.push("Genetic testing, Lipid panel monitoring");
+                }
+                if (ldl > 190 && totalCholesterol > 300) {
+                    diseases.push({ name: "Atherosclerosis", percentage: 75 });
+                    followUps.push("Statins, Angioplasty");
+                }
+                if (triglycerides > 500) {
+                    diseases.push({ name: "Pancreatitis", percentage: 70 });
+                    followUps.push("Hospitalization, Lipid panel monitoring");
+                }
+                if (hdl < 30 && totalCholesterol > 200) {
+                    diseases.push({ name: "Coronary Artery Disease", percentage: 85 });
+                    followUps.push("ECG, Cardiac catheterization");
+                }
+                if (ldl > 130 && triglycerides > 200) {
+                    diseases.push({ name: "Peripheral Artery Disease", percentage: 80 });
+                    followUps.push("Doppler ultrasound, Exercise therapy");
+                }
+                if (hdl < 40 && totalCholesterol > 240 && vldl > 30) {
+                    diseases.push({ name: "Diabetes-related Dyslipidemia", percentage: 85 });
+                    followUps.push("Blood sugar control, Lipid-lowering medication");
+                }
+                if (triglycerides > 1000) {
+                    diseases.push({ name: "Hypertriglyceridemia", percentage: 90 });
+                    followUps.push("Fibrates, Diet changes");
+                }
+                if (ldl > 160 && hdl < 35) {
+                    diseases.push({ name: "Cardiovascular Disease", percentage: 95 });
+                    followUps.push("Stress test, Statins");
+                }
+
+                displayResults(diseases, followUps, elevatedValues);
+            });
+
+            function displayResults(diseases, followUps, elevatedValues) {
+                let resultDiv = $('#result');
+                resultDiv.empty();
+
+                if (elevatedValues.length > 0) {
+                    resultDiv.append(`<h4>Elevated Parameters:</h4>`);
+                    elevatedValues.forEach(e => {
+                        resultDiv.append(`<p><strong>${e.name}</strong>: ${e.value} (Normal Range: ${e.normalRange}) - ${e.description}</p>`);
+                    });
+                }
+
+                if (diseases.length > 0) {
+                    resultDiv.append(`<h4>Detected Diseases:</h4>`);
+                    diseases.forEach(d => {
+                        resultDiv.append(`<p><strong>${d.name}</strong> (${d.percentage}% likelihood)</p>`);
+                    });
+                    resultDiv.append(`<h4>Follow-Up Tests/Recommendations:</h4>`);
+                    followUps.forEach(f => {
+                        resultDiv.append(`<p>${f}</p>`);
+                    });
+
+                    displayDiseaseChart(diseases);
+                } else {
+                    resultDiv.append(`<p class="alert alert-success"><i class="fas fa-check"></i>Your Lipid Profile is within normal ranges!</p>`);
+                }
+            }
+
+            function displayDiseaseChart(diseases) {
+                let ctx = document.getElementById('diseaseChart').getContext('2d');
+                document.getElementById('diseaseChart').style.display = 'block';
+
+                let diseaseNames = diseases.map(d => d.name);
+                let diseasePercentages = diseases.map(d => d.percentage);
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: diseaseNames,
+                        datasets: [{
+                            data: diseasePercentages,
+                            backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Detected Diseases'
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

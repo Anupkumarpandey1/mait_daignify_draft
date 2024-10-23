@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Report Analysis</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 0;
+            background-color: #007bff;
+            color: white;
+            border-bottom: 10px solid #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            margin: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #007bff;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .feature-section {
+            padding: 60px 0;
+        }
+    </style>
+      <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <h1>Health Test Analysis</h1>
+        <p>Your health is your priority.</p>
+        <a href="index.html" class="btn btn-light btn-lg">Explore Features</a>
+    </header>
+
+    <div class="container feature-section">
+        <h2 class="text-center mb-5">Analyze Your Reports, Yourself</h2>
+        <div class="row">
+            <!-- Kidney Function Test Card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://assets.lybrate.com/imgs/tic/enadp/image-of-the-kidneys.jpg" class="card-img-top" alt="Kidney">
+                    <div class="card-body">
+                        <h5 class="card-title">Kidney Function Test (KFT)</h5>
+                        <p class="card-text">Analyzes the health of your kidneys by measuring various substances in your blood and urine.</p>
+                        <a href="kidney_function.html" class="btn btn-primary">Analyze KFT</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Liver Function Test Card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://greaterorlandogi.com/wp-content/uploads/2019/02/Liver-1.jpeg" class="card-img-top" alt="Liver">
+                    <div class="card-body">
+                        <h5 class="card-title">Liver Function Test (LFT)</h5>
+                        <p class="card-text">Evaluates the overall health of your liver by measuring levels of various enzymes and proteins.</p>
+                        <a href="liver_function.html" class="btn btn-primary">Analyze LFT</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Blood Test Card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://as1.ftcdn.net/v2/jpg/04/81/58/62/1000_F_481586220_T6U79EMCFCWbjLlVXjSTAgIRJTKK3NWB.jpg" class="card-img-top" alt="Blood">
+                    <div class="card-body">
+                        <h5 class="card-title">Blood Test (BT)</h5>
+                        <p class="card-text">Assesses your overall health and helps detect a wide range of disorders.</p>
+                        <a href="blood_test.html" class="btn btn-primary">Analyze BT</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more cards as needed -->
+        </div>
+
+        <div class="row">
+            <!-- Kidney Function Test Card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://admin.tenetdiagnostics.in/storage/posts/June2022/KDOuLYEI2LreEIGKhCxp.jpg" class="card-img-top" alt="Kidney">
+                    <div class="card-body">
+                        <h5 class="card-title">Lipid Profile Test (LPT)</h5>
+                        <p class="card-text">Analyzes the health of your lipid profile and heart health by measuring various substances in your blood and urine.</p>
+                        <a href="lipid_profile.html" class="btn btn-primary">Analyze Lipid profile</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Liver Function Test Card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://www.shutterstock.com/image-photo/test-tube-blood-sample-electrolyte-260nw-1079579519.jpg" class="card-img-top" alt="Liver">
+                    <div class="card-body">
+                        <h5 class="card-title">Electrolyte Test </h5>
+                        <p class="card-text">Evaluates the overall Electrolyte in your body.</p>
+                        <a href="electrolyte.html" class="btn btn-primary">Analyze Electrolyte</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Blood Test Card
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="https://as1.ftcdn.net/v2/jpg/04/81/58/62/1000_F_481586220_T6U79EMCFCWbjLlVXjSTAgIRJTKK3NWB.jpg" class="card-img-top" alt="Blood">
+                    <div class="card-body">
+                        <h5 class="card-title">Blood Test (BT)</h5>
+                        <p class="card-text">Assesses your overall health and helps detect a wide range of disorders.</p>
+                        <a href="blood_test.html" class="btn btn-primary">Analyze BT</a>
+                    </div>
+                </div>
+            </div> -->
+            <!-- Add more cards as needed -->
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Button -->
+    <div class="chatbot-icon" id="chatbot-icon" onclick="toggleChat()">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/chat.png"/>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span>Diagnify Diet Assistant</span>
+            <button class="close-btn" onclick="toggleChat()">X</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="bot-message">
+                <p>Hello! I am the Diagnify Diet Assistant. How can I help you with your diet and food choices today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask about diet restrictions..." onkeydown="if(event.key === 'Enter'){ sendMessage(); }">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+
+    <footer>
+        <p>&copy; 2024 Health Report Analyzer. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
